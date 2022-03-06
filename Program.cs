@@ -6,7 +6,7 @@ namespace DictionaryHowTo
 
     class Program
     {
-        static readonly ConcurrentDictionary<string, CityInfo> Cities =new ConcurrentDictionary<string, CityInfo>(StringComparer.OrdinalIgnoreCase);
+        static readonly ConcurrentDictionary<string, CityInfo> Cities = new ConcurrentDictionary<string, CityInfo>(StringComparer.OrdinalIgnoreCase);
 
         static async Task Main()
         {
@@ -24,22 +24,20 @@ namespace DictionaryHowTo
             };
 
             // Add some key/value pairs from multiple threads.
-            await Task.WhenAll(
-                Task.Run(() => TryAddCities(cityData)),
-                Task.Run(() => TryAddCities(cityData)));
+            TryAddCities(cityData);
 
             static void TryAddCities(CityInfo[] cities)
             {
                 for (var i = 0; i < cities.Length; ++i)
                 {
-                    var (city, threadId) = (cities[i], Thread.CurrentThread.ManagedThreadId);
+                    var city = cities[i];
                     if (Cities.TryAdd(city.Name, city))
                     {
-                        Console.WriteLine($"Thread={threadId}, added {city.Name}.");
+                        Console.WriteLine($"added {city.Name}.");
                     }
                     else
                     {
-                        Console.WriteLine($"Thread={threadId}, could not add {city.Name}, it was already added.");
+                        Console.WriteLine($"Tcould not add {city.Name}, it was already added.");
                     }
                 }
             }
